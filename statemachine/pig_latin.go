@@ -1,4 +1,4 @@
-package piglatin
+package statemachine
 
 import (
   "unicode"
