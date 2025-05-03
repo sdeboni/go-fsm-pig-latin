@@ -1,4 +1,8 @@
-package statemachine
+// Iteration 2 assumes input is ascii only for benchmark comparison with deepdive solution
+// This statemachine implementation benchmarked 20% faster than the deepdive generics map implementation
+// 1395ns vs 1692ns, with the tradeoff being 3x more lines of code: SLOC 123 vs 49
+// 
+package piglatin
 
 import (
   "strings"
