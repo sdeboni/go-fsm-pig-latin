@@ -1,7 +1,6 @@
 package statemachine
 
 import (
-  "unicode"
   "strings"
 )
 
@@ -40,10 +39,10 @@ func translate(word string) string {
   var output strings.Builder
   st := START
 
-  runes := []rune(word)
+  bytes := []byte(word)
 
-  for pos := 0; pos < len(runes); pos++ {
-    curr := unicode.ToLower(runes[pos])
+  for pos := 0; pos < len(bytes); pos++ {
+    curr := bytes[pos]
 
     switch st {
     case START:
@@ -62,25 +61,17 @@ func translate(word string) string {
       }
     case LEADING_CONSONANTS:
       if curr == 'y' {
-        if pos < len(runes) {
-          for _, r := range runes[pos:] {
-            output.WriteRune(r)
-          }
+        if pos < len(bytes) {
+          output.WriteString(word[pos:])
         }
-        for _, r := range runes[:pos] { 
-          output.WriteRune(r)
-        }
+        output.WriteString(word[:pos])
         output.WriteString("ay")
         return output.String()
       } else if curr == 'q' {
         st = PREV_Q
       } else if isVowel(curr) {
-        for _, r := range runes[pos:] {
-          output.WriteRune(r)
-        }
-        for _, r := range runes[:pos] { 
-          output.WriteRune(r)
-        }
+        output.WriteString(word[pos:])
+        output.WriteString(word[:pos])
         output.WriteString("ay")
         return output.String()
       }
@@ -102,14 +93,10 @@ func translate(word string) string {
       pos -= 1;
     case PREV_Q:
       if curr == 'u' {
-        if pos < len(runes)-1 {
-          for _, r := range runes[pos+1:] {
-            output.WriteRune(r)
-          }
+        if pos < len(bytes)-1 {
+          output.WriteString(word[pos+1:])
         }
-        for _, r := range runes[:pos+1] {
-          output.WriteRune(r)
-        }
+        output.WriteString(word[:pos+1])
         output.WriteString("ay")
         return output.String()
       }
@@ -121,16 +108,16 @@ func translate(word string) string {
   return word
 }
 
-var vowels = []rune{'a','e','i','o','u'}
-func isVowel(r rune) bool {
+var vowels = []byte{'a','e','i','o','u'}
+func isVowel(b byte) bool {
   for _, v := range vowels {
-    if r == v {
+    if b == v {
       return true
     }
   }
   return false
 }
 
-func isConsonant(r rune) bool {
-  return !isVowel(r)
+func isConsonant(b byte) bool {
+  return !isVowel(b)
 }
